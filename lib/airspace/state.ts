@@ -9,7 +9,7 @@ import {
   loadNews,
 } from "./loader";
 import { detectAffected } from "./detection";
-import { eventCost, trackLengthNm, COST_RATES } from "./cost";
+import { eventCost, flightCost, trackLengthNm, COST_RATES } from "./cost";
 import { buildOptions } from "./options";
 import { buildNetworkView } from "./network";
 
@@ -17,6 +17,9 @@ export function buildState(): StateModel {
   const flights = loadFlights();
   const tfr = loadTfr();
   detectAffected(flights, tfr.polygon, tfr.startSec, tfr.endSec);
+
+  // attach per-flight cost for timeline accrual
+  for (const f of flights) f.costUsd = f.affected ? flightCost(f).totalUsd : 0;
 
   const affected = flights.filter((f) => f.affected);
   const cost = eventCost(flights);
@@ -45,5 +48,6 @@ export function buildState(): StateModel {
     news: loadNews(),
     network: buildNetworkView(cost.totalUsd),
     costModel: COST_RATES,
+    window: { startSec: tfr.startSec, endSec: tfr.endSec },
   };
 }

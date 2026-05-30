@@ -19,7 +19,7 @@ interface SimulationControlsProps {
   speed: number;
   onTogglePlay: () => void;
   onSetSpeed: (speed: number) => void;
-  onSeek: (simTime: number) => void;
+  onSeek?: (simTime: number) => void;
   markers?: TimelineMarker[];
 }
 
@@ -29,7 +29,7 @@ export default function SimulationControls({
   speed,
   onTogglePlay,
   onSetSpeed,
-  onSeek,
+  onSeek = () => {},
   markers = [],
 }: SimulationControlsProps) {
   const progress = Math.min((simTime / SIM_DURATION) * 100, 100);

@@ -15,6 +15,7 @@ export interface FlightState {
   arr?: string | null;
   firstSeen?: number | null;
   lastSeen?: number | null;
+  costUsd?: number; // this flight's disruption cost (for timeline accrual)
 }
 
 export interface CostLineItem {
@@ -91,4 +92,5 @@ export interface StateModel {
   news: NewsItem[];
   network: NetworkView;
   costModel: CostRateDoc[]; // published rates + sources — the "show the data" surface
+  window: { startSec: number; endSec: number }; // event closure window (epoch sec) for the timeline
 }
