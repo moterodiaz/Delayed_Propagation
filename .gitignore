@@ -45,3 +45,7 @@ next-env.d.ts
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# local-only
+.claude/
+results.json
