@@ -71,6 +71,7 @@ export interface NewsFeedItem {
   timestamp: string; // ISO 8601 with offset
   type: "NEWS_ALERT" | "NOTAM";
   source: string;
+  url?: string; // link to the originating source/report
   headline: string;
   synthesis: string;
   metrics: NewsFeedMetrics;

@@ -267,6 +267,8 @@ export default function Page() {
             speed={speed}
             onTogglePlay={() => setIsPlaying((p) => !p)}
             onSetSpeed={setSpeed}
+            onSeek={handleSeek}
+            markers={timelineMarkers}
           />
         </div>
       )}

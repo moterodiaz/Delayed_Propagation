@@ -1,7 +1,7 @@
 // components/NewsFeed.tsx
 "use client";
 
-import { Fuel, Newspaper, Plane, Siren, Timer } from "lucide-react";
+import { ExternalLink, Fuel, Newspaper, Plane, Siren, Timer } from "lucide-react";
 import type { NewsFeedItem } from "@/lib/types";
 
 interface NewsFeedProps {
@@ -75,9 +75,21 @@ export default function NewsFeed({ items, simTime }: NewsFeedProps) {
               <div className="mt-1.5 text-xs font-semibold leading-snug text-gray-100">
                 {it.headline}
               </div>
-              <div className="mt-0.5 text-[10px] uppercase tracking-wide text-gray-500">
-                {it.source}
-              </div>
+              {it.url ? (
+                <a
+                  href={it.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-0.5 inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-cyan-400 transition-colors hover:text-cyan-300 hover:underline"
+                >
+                  {it.source}
+                  <ExternalLink size={9} />
+                </a>
+              ) : (
+                <div className="mt-0.5 text-[10px] uppercase tracking-wide text-gray-500">
+                  {it.source}
+                </div>
+              )}
               <p className="mt-1.5 text-[11px] leading-snug text-gray-300">
                 {it.synthesis}
               </p>

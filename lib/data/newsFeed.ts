@@ -8,6 +8,7 @@ export const NEWS_FEED: NewsFeedItem[] = [
     timestamp: "2026-05-22T17:15:00-04:00",
     type: "NEWS_ALERT",
     source: "GDELT / Aviation Logistics Wire",
+    url: "https://www.faa.gov/newsroom",
     headline:
       "FAA Confirms Impending Closure of Crucial Caribbean Corridor for Commercial Space Operations",
     synthesis:
@@ -23,6 +24,7 @@ export const NEWS_FEED: NewsFeedItem[] = [
     timestamp: "2026-05-22T17:30:00-04:00",
     type: "NOTAM",
     source: "FAA SWIM / KZJX (Jacksonville Center)",
+    url: "https://tfr.faa.gov/tfr2/list.html",
     headline:
       "NOTAM A0183/26: TEMPORARY FLIGHT RESTRICTIONS (TFR) ACTIVATED FOR SPACEX STARSHIP FLT-12 LAUNCH",
     synthesis:
@@ -38,6 +40,7 @@ export const NEWS_FEED: NewsFeedItem[] = [
     timestamp: "2026-05-22T18:30:00-04:00",
     type: "NEWS_ALERT",
     source: "GDELT / Aerospace News Flash",
+    url: "https://www.spacex.com/launches/",
     headline:
       "SpaceX Starship V3 Launches Safely From Pad 2; Super Heavy Booster Suffers Hard Landing in Gulf Zone",
     synthesis:
@@ -53,6 +56,7 @@ export const NEWS_FEED: NewsFeedItem[] = [
     timestamp: "2026-05-22T19:15:00-04:00",
     type: "NOTAM",
     source: "FAA / JCAA (Jamaica Civil Aviation Authority)",
+    url: "https://jcaa.gov.jm/aeronautical-information",
     headline:
       "NOTAM B0975/26: REENTRY RISK CORRIDOR DECLARED ACTIVE IN LOWER CORRIDORS",
     synthesis:
@@ -68,6 +72,7 @@ export const NEWS_FEED: NewsFeedItem[] = [
     timestamp: "2026-05-22T19:45:00-04:00",
     type: "NEWS_ALERT",
     source: "GDELT / Energy & Commodities Index",
+    url: "https://www.eia.gov/petroleum/gasdiesel/",
     headline:
       "Jet Fuel Spot Prices Jump 6.6% at Southeastern Terminals Amid Widespread Flight Diversions",
     synthesis:
