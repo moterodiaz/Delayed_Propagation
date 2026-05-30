@@ -61,3 +61,67 @@ Acting alone (selfish-optimal) costs the full figure. If carriers coordinated sl
 ## Why it lands
 
 Clear-weather paradox + a sourced dollar figure + the coordination gap. Three things on one screen that turn a map into a business case.
+
+---
+
+## Software & tools we used
+
+| Layer | Tool | Why |
+|---|---|---|
+| Frontend | **Next.js 16 + React 19** | one app, App Router, API routes co-located with UI |
+| Map | **Leaflet + react-leaflet**, CARTO dark tiles | free, no API token (no live dependency on stage) |
+| Styling | **Tailwind CSS v4** + inline panel styling | fast layout, dark "ops" aesthetic |
+| Flight data | **OpenSky Network API** | real ADS-B — the JBU1575 track + live traffic |
+| Cost engine | TypeScript (`lib/airspace/*`) | deterministic compute, served at `/api/state` |
+| Chatbot | **Anthropic API** (`claude-sonnet-4-6`) via REST | grounded ops assistant; cached fallback |
+| Cost rates | **A4A, FAA/DOT, EUROCONTROL** published figures | defensible dollar numbers |
+| Geometry | shapely-equivalent point/line-in-polygon (TS) | affected-flight detection |
+
+API contract: `GET /api/state` returns the full deterministic snapshot (flights, cost, options, network, sources); `POST /api/chat` answers grounded in those numbers.
+
+## How we calculated the pricing
+
+Per-flight disruption cost = sum of sourced line items (no invented numbers; fuel is inside the block rate, never double-counted):
+
+```
+disruptionMin = hero: wasted block time (returned to origin)
+                casualty: time exposed in the closure window (real firstSeen/lastSeen)
+
+block delay   = disruptionMin × $100.76/min            [A4A 2024]
+passenger time= disruptionMin × $0.78/min × 150 seats  [FAA/DOT $47/hr]
+reaccommodation = diverted ? 150×$150 : 150×15%×$150   [Hawaiian A330 precedent]
+diversion     = returned/diverted ? $92,500 : 0        [EUROCONTROL / TPG, A320 midpoint]
+crew overnight= (>3h or diverted) ? $1,800 : 0
+```
+
+Event total = Σ affected flights ≈ **$351k**. The 3 action options price the same way:
+
+- **Hold** = airborne block ($100.76/min) + passenger time, over the window × fleet.
+- **Divert** = $92.5k diversion penalty + $150/pax reaccommodation × fleet.
+- **Pre-empt** = ground hold at 30% of block (no fuel burn) + passenger time × fleet → cheapest.
+
+Click any option in the app to expand its itemized breakdown with the source on each line.
+
+**Honest note:** the *fleet count* and the apron-density flights are partly synthetic (only the hero has a real track; the 15 casualties are real callsigns/times but no coordinates). The *rates* are all real and cited — so the figures are grounded even where the fleet is padded for the visual.
+
+## Our design process
+
+1. **SRS** — wrote a Software Requirements Spec: the user (airline ops center), the hero scenario, and R1–R10 (Tier 1) / R11–R13 (stretch), each with acceptance criteria.
+2. **SDD** — a System Design Doc: 3-layer architecture (static data → compute-once backend → dashboard), the `StateModel` contract, determinism as a hard constraint.
+3. **Data first** — pulled the real JBU1575 ADS-B track + 15 casualties from OpenSky, the Kingston FIR boundary, clear-VFR METARs, the NOTAM/news timeline.
+4. **Backend brain** — cost engine, detection, priced options, network gap, grounded chatbot — built test-first, deterministic, served as one JSON snapshot.
+5. **UI iterations** — snapshot dashboard → timeline-driven dashboard → merged onto the sim/live timeline the team liked, then layered cost, grounded fleet, live dead-reckoning, and the pitch dock.
+6. **Decision log** — every non-obvious call (e.g., dropping a separate fuel line to avoid double-counting) recorded in `decisions/log.md`.
+
+## Shortfalls & how we'd improve
+
+| Shortfall | Why it's there | How we'd fix it |
+|---|---|---|
+| Only the hero animates with a real track | OpenSky gave us one full track; casualties are a manifest (no coords) | Fetch full ADS-B tracks for all 15 casualties so every affected plane flies its real path |
+| Apron fleet padded to ~42 | density for the visual | Pull the real scheduled departures from KMIA/KFLL in the window |
+| Debris hazard corridor is drawn, not published | exact TFR sub-polygon isn't public | Ingest the real FAA TFR GeoJSON via NASA DIP / FAA SWIM |
+| Coordination gap uses a fixed 0.75 factor | no time for a real solver | Build a true multi-carrier slot-allocation optimizer (system-optimal) |
+| One event at a time | scope | Multi-event mode: concurrent disruptions, re-run detection/cost on each |
+| Live feed is anonymous OpenSky (rate-limited) | no auth on stage | OAuth2 OpenSky + a server cache; richer live NOTAM ingestion (GDELT/SWIM) |
+| Chatbot prose can vary | LLM | Already grounded on computed numbers + cached fallback; would add tool-calling so it can re-run "what-if" pricing live |
+| Cost model is per-flight heuristic | not an ops-grade model | Calibrate against airline historical IROPS cost data |

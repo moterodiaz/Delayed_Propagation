@@ -1,10 +1,12 @@
 "use client";
+import { useState } from "react";
 import type { StateModel } from "@/lib/airspace/types";
 import { accruedAt } from "./accrual";
 
 const usd = (n: number) => "$" + Math.round(n).toLocaleString("en-US");
 
 export default function PricingPanel({ state, t }: { state: StateModel | null; t: number }) {
+  const [openOpt, setOpenOpt] = useState<string | null>(null);
   if (!state) return <Panel title="PRICING & OPTIONS">Loading…</Panel>;
   const e = state.events[0];
   const n = state.network;
@@ -37,17 +39,38 @@ export default function PricingPanel({ state, t }: { state: StateModel | null; t
       </div>
 
       <div style={{ padding: "10px 14px" }}>
-        <div style={{ fontSize: 9, color: "#4a6a8a", letterSpacing: 2, marginBottom: 8 }}>RESPONSE OPTIONS (cheapest flagged)</div>
-        {e.options.map((o) => (
-          <div key={o.kind} style={{ position: "relative", background: o.cheapest ? "rgba(67,160,71,0.08)" : "rgba(6,16,38,0.85)", border: o.cheapest ? "1px solid rgba(67,160,71,0.45)" : "1px solid rgba(0,160,255,0.1)", borderRadius: 5, padding: "9px 11px", marginBottom: 8 }}>
-            {o.cheapest && <div style={{ position: "absolute", top: 0, right: 8, fontSize: 8, fontWeight: 800, letterSpacing: 1, color: "#050d1a", background: "#43a047", padding: "2px 7px", borderRadius: "0 0 4px 4px" }}>CHEAPEST</div>}
-            <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#c8e0f8", textTransform: "capitalize" }}>{o.kind}</span>
-              <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: o.cheapest ? "#00ff88" : "#ffae42" }}>{usd(o.costUsd)}</span>
+        <div style={{ fontSize: 9, color: "#4a6a8a", letterSpacing: 2, marginBottom: 8 }}>RESPONSE OPTIONS (click for breakdown)</div>
+        {e.options.map((o) => {
+          const open = openOpt === o.kind;
+          return (
+            <div key={o.kind} onClick={() => setOpenOpt(open ? null : o.kind)} style={{ position: "relative", cursor: "pointer", background: o.cheapest ? "rgba(67,160,71,0.08)" : "rgba(6,16,38,0.85)", border: open ? "1px solid rgba(0,200,255,0.5)" : o.cheapest ? "1px solid rgba(67,160,71,0.45)" : "1px solid rgba(0,160,255,0.1)", borderRadius: 5, padding: "9px 11px", marginBottom: 8 }}>
+              {o.cheapest && <div style={{ position: "absolute", top: 0, right: 8, fontSize: 8, fontWeight: 800, letterSpacing: 1, color: "#050d1a", background: "#43a047", padding: "2px 7px", borderRadius: "0 0 4px 4px" }}>CHEAPEST</div>}
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#c8e0f8", textTransform: "capitalize" }}>{o.kind}</span>
+                <span style={{ fontSize: 9, color: "#4a6a8a" }}>{open ? "▾" : "▸"}</span>
+                <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, fontFamily: "monospace", color: o.cheapest ? "#00ff88" : "#ffae42" }}>{usd(o.costUsd)}</span>
+              </div>
+              <p style={{ margin: 0, fontSize: 10.5, color: "#4a6a8a", lineHeight: 1.4 }}>{o.rationale}</p>
+
+              {open && (
+                <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(0,200,255,0.15)" }}>
+                  {o.breakdown.map((b, i) => (
+                    <div key={i} style={{ marginBottom: 6 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#9abcda" }}>
+                        <span style={{ paddingRight: 6 }}>{b.label}</span>
+                        <span style={{ fontFamily: "monospace", color: "#c8e0f8" }}>{usd(b.usd)}</span>
+                      </div>
+                      <div style={{ fontSize: 8.5, color: "#5a7a9a", fontStyle: "italic" }}>↳ {b.source}</div>
+                    </div>
+                  ))}
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, fontWeight: 700, color: "#c8e0f8", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 4 }}>
+                    <span>Total</span><span style={{ fontFamily: "monospace" }}>{usd(o.costUsd)}</span>
+                  </div>
+                </div>
+              )}
             </div>
-            <p style={{ margin: 0, fontSize: 10.5, color: "#4a6a8a", lineHeight: 1.4 }}>{o.rationale}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div style={{ marginTop: "auto", padding: "11px 14px", borderTop: "1px solid rgba(0,160,255,0.08)", background: "rgba(0,200,255,0.04)" }}>

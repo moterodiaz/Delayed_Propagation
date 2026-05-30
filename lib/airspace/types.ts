@@ -41,6 +41,7 @@ export interface ActionOption {
   costUsd: number;
   cheapest: boolean;
   rationale: string;
+  breakdown: CostLineItem[]; // itemized, cited cost components for this option
 }
 
 export interface EventCard {

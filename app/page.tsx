@@ -1,23 +1,24 @@
 // Root = sim/live timeline. Sim: hero U-turn + stationed flights that ground when the TFR
-// activates + accruing cost. Live: real OpenSky traffic (dead-reckoned) with synthetic
-// fallback + NOTAM/intelligence feed (no pricing). Pitch dock explains everything.
+// activates + accruing cost + clickable priced options. Live: real OpenSky traffic
+// (dead-reckoned) with synthetic fallback. Right panel = Intelligence feed only.
+// Pitch dock explains everything.
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import SimulationControls, { type TimelineMarker } from "@/components/SimulationControls";
-import FeedTabs from "@/components/FeedTabs";
+import NewsFeed from "@/components/NewsFeed";
 import PricingPanel from "@/components/demo/PricingPanel";
 import PitchDock from "@/components/PitchDock";
 import { accruedAt, projectForward } from "@/components/demo/accrual";
-import { getActiveTFRs, generateRandomTFR } from "@/lib/simulation";
+import { getActiveTFRs } from "@/lib/simulation";
 import { fetchLiveFlights } from "@/lib/opensky";
 import { HERO_FLIGHT } from "@/lib/data/heroFlight";
 import { KINGSTON_TFRS } from "@/lib/data/kingstonTFR";
 import { NEWS_FEED } from "@/lib/data/newsFeed";
 import { AIRPORTS } from "@/lib/data/airports";
 import { GROUNDED_FLIGHTS } from "@/lib/data/groundedFlights";
-import type { TFRZone, SimEvent, LiveFlight } from "@/lib/types";
+import type { LiveFlight } from "@/lib/types";
 import type { StateModel } from "@/lib/airspace/types";
 
 const SIM_FLIGHTS = [HERO_FLIGHT];
@@ -54,13 +55,7 @@ export default function Page() {
   const [liveCount, setLiveCount] = useState(0);
   const [liveSynthetic, setLiveSynthetic] = useState(false);
   const liveBase = useRef<{ flights: LiveFlight[]; t: number }>({ flights: [], t: 0 });
-  const [extraTFRs, setExtraTFRs] = useState<TFRZone[]>([]);
   const [state, setState] = useState<StateModel | null>(null);
-  const [events, setEvents] = useState<SimEvent[]>([
-    { id: "init-0", simTime: 0, message: "Simulation initialized. May 22, 2026 -- 17:00 EDT.", type: "info" },
-    { id: "init-1", simTime: 0, message: "Monitoring JetBlue 1575 (KFLL->MKJP) -- Kingston FIR.", type: "info" },
-  ]);
-  const firedEvents = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     fetch("/api/state").then((r) => r.json()).then(setState).catch(() => setState(null));
@@ -72,10 +67,6 @@ export default function Page() {
       : state.window.startSec + (simTime / SIM_DURATION) * (state.window.endSec - state.window.startSec)
     : 0;
   const acc = state ? accruedAt(state, realT) : { cost: 0, affected: 0, frac: 0 };
-
-  const addEvent = useCallback((ev: Omit<SimEvent, "id">) => {
-    setEvents((prev) => [...prev, { ...ev, id: `ev-${Date.now()}-${Math.random()}` }]);
-  }, []);
 
   // sim tick
   useEffect(() => {
@@ -93,25 +84,6 @@ export default function Page() {
     if (simTime >= SIM_DURATION) setIsPlaying(false);
   }, [simTime]);
 
-  // scripted sim events
-  useEffect(() => {
-    if (mode !== "sim") return;
-    getActiveTFRs([...KINGSTON_TFRS, ...extraTFRs], simTime).forEach((tfr) => {
-      if (!firedEvents.current.has(tfr.id)) {
-        firedEvents.current.add(tfr.id);
-        addEvent({ simTime, message: `TFR ACTIVATED: ${tfr.label} -- ${tfr.reason}`, type: tfr.severity === "danger" ? "danger" : "warning" });
-      }
-    });
-    if (simTime >= TFR_ACTIVE_AT && !firedEvents.current.has("grounded-fleet")) {
-      firedEvents.current.add("grounded-fleet");
-      addEvent({ simTime, message: "Kingston FIR closed -- ~42 stationed flights at KMIA/KFLL can no longer depart.", type: "danger" });
-    }
-    if (simTime >= 2239 && !firedEvents.current.has("b61575-diverted")) {
-      firedEvents.current.add("b61575-diverted");
-      addEvent({ simTime, message: "JetBlue 1575: no clearance through Kingston FIR closure -- U-turn over the Bahamas, returning to KFLL.", type: "danger" });
-    }
-  }, [simTime, mode, extraTFRs, addEvent]);
-
   // live polling
   useEffect(() => {
     if (mode !== "live") return;
@@ -125,12 +97,11 @@ export default function Page() {
       setLiveSynthetic(synthetic);
       setLiveAnimated(use);
       setLiveLoading(false);
-      addEvent({ simTime: 0, message: `Live feed updated -- ${use.length} aircraft${synthetic ? " (synthetic fallback)" : ""} in region.`, type: "info" });
     }
     poll();
     const interval = setInterval(poll, LIVE_POLL_MS);
     return () => clearInterval(interval);
-  }, [mode, addEvent]);
+  }, [mode]);
 
   // live dead-reckoning: glide planes between polls
   useEffect(() => {
@@ -150,24 +121,12 @@ export default function Page() {
     return () => clearInterval(id);
   }, [mode]);
 
-  function switchMode(next: "sim" | "live") {
-    setIsPlaying(false);
-    setMode(next);
-    addEvent({ simTime: 0, message: next === "sim" ? "Switched to simulation mode." : "Switched to live mode -- polling OpenSky Network.", type: "info" });
-  }
-
-  const handleInjectRandom = useCallback(() => {
-    const newTFR = generateRandomTFR(simTime);
-    setExtraTFRs((prev) => [...prev, newTFR]);
-    addEvent({ simTime, message: `Random TFR injected: ${newTFR.label} -- ${newTFR.reason}`, type: newTFR.severity === "danger" ? "danger" : "warning" });
-  }, [simTime, addEvent]);
-
   const activeTFRs = mode === "sim" ? getActiveTFRs(KINGSTON_TFRS, simTime) : [];
 
-  const handleSeek = useCallback((t: number) => {
+  function handleSeek(t: number) {
     setIsPlaying(false);
     setSimTime(Math.max(0, Math.min(t, SIM_DURATION)));
-  }, []);
+  }
 
   const timelineMarkers: TimelineMarker[] = [
     ...NEWS_FEED.map((it) => {
@@ -201,8 +160,8 @@ export default function Page() {
         <div className="flex items-center gap-3">
           <PitchDock state={state} />
           <div className="flex items-center gap-1 bg-gray-800 rounded-lg p-1">
-            <button onClick={() => switchMode("sim")} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "sim" ? "bg-cyan-600 text-white" : "text-gray-400 hover:text-gray-200"}`}>Simulation</button>
-            <button onClick={() => switchMode("live")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "live" ? "bg-green-600 text-white" : "text-gray-400 hover:text-gray-200"}`}>
+            <button onClick={() => setMode("sim")} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "sim" ? "bg-cyan-600 text-white" : "text-gray-400 hover:text-gray-200"}`}>Simulation</button>
+            <button onClick={() => setMode("live")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "live" ? "bg-green-600 text-white" : "text-gray-400 hover:text-gray-200"}`}>
               {mode === "live" && liveLoading && <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />}
               Live
             </button>
@@ -210,7 +169,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Map + Pricing(sim) + Feeds */}
+      {/* Map + Pricing(sim) + Intelligence */}
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 relative">
           <AirspaceMap
@@ -218,7 +177,7 @@ export default function Page() {
             simTime={simTime}
             liveFlights={liveAnimated}
             activeTFRs={activeTFRs}
-            extraTFRs={extraTFRs}
+            extraTFRs={[]}
             airports={AIRPORTS}
             mode={mode}
             grounded={GROUNDED_FLIGHTS}
@@ -233,9 +192,12 @@ export default function Page() {
           </div>
         )}
 
-        {/* Intelligence / Events tabs */}
-        <div className="w-80 shrink-0 border-l border-gray-800 min-h-0">
-          <FeedTabs events={events} onInjectRandomEvent={handleInjectRandom} news={NEWS_FEED} simTime={mode === "sim" ? simTime : undefined} />
+        {/* Intelligence feed */}
+        <div className="w-80 shrink-0 flex flex-col border-l border-gray-800 min-h-0">
+          <div className="px-4 py-2.5 text-xs font-bold text-cyan-400 tracking-widest uppercase border-b border-gray-800">Intelligence Feed</div>
+          <div className="flex-1 min-h-0 p-3 overflow-hidden">
+            <NewsFeed items={NEWS_FEED} simTime={mode === "sim" ? simTime : undefined} />
+          </div>
         </div>
       </div>
 
