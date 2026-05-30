@@ -54,6 +54,25 @@ export function heroPositionAt(
   return [last.lat, last.lng];
 }
 
+/** Dead-reckon a position forward along a heading at velocity (m/s) for dt seconds. */
+export function projectForward(
+  lat: number,
+  lng: number,
+  headingDeg: number,
+  velocityMs: number,
+  dtSec: number,
+): [number, number] {
+  const R = 6371000;
+  const d = velocityMs * dtSec;
+  if (d <= 0) return [lat, lng];
+  const br = (headingDeg * Math.PI) / 180;
+  const la1 = (lat * Math.PI) / 180;
+  const lo1 = (lng * Math.PI) / 180;
+  const la2 = Math.asin(Math.sin(la1) * Math.cos(d / R) + Math.cos(la1) * Math.sin(d / R) * Math.cos(br));
+  const lo2 = lo1 + Math.atan2(Math.sin(br) * Math.sin(d / R) * Math.cos(la1), Math.cos(d / R) - Math.sin(la1) * Math.sin(la2));
+  return [(la2 * 180) / Math.PI, (lo2 * 180) / Math.PI];
+}
+
 export function fmtUtc(epochSec: number): string {
   const d = new Date(epochSec * 1000);
   const hh = String(d.getUTCHours()).padStart(2, "0");

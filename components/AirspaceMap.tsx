@@ -18,6 +18,7 @@ import type {
   TFRZone as TFRZoneType,
   Airport,
 } from "@/lib/types";
+import type { GroundedFlight } from "@/lib/data/groundedFlights";
 
 export interface AirspaceMapProps {
   flights: Flight[];
@@ -27,6 +28,8 @@ export interface AirspaceMapProps {
   extraTFRs: TFRZoneType[];
   airports: Airport[];
   mode: "sim" | "live";
+  grounded?: GroundedFlight[];
+  groundedActive?: boolean; // TFR active -> stationed flights can't depart
 }
 
 export default function AirspaceMap({
@@ -37,6 +40,8 @@ export default function AirspaceMap({
   extraTFRs,
   airports,
   mode,
+  grounded = [],
+  groundedActive = false,
 }: AirspaceMapProps) {
   return (
     <MapContainer center={[24.0, -78.0]} zoom={5} className="w-full h-full">
@@ -108,6 +113,29 @@ export default function AirspaceMap({
           </Tooltip>
         </CircleMarker>
       ))}
+
+      {/* Stationed flights waiting to depart -- sim mode. Turn red + "GROUNDED" when TFR active. */}
+      {mode === "sim" &&
+        grounded.map((g) => (
+          <CircleMarker
+            key={`gnd-${g.id}`}
+            center={[g.lat, g.lng]}
+            radius={groundedActive ? 4 : 3}
+            pathOptions={{
+              color: groundedActive ? "#ef4444" : "#fbbf24",
+              fillColor: groundedActive ? "#ef4444" : "#fbbf24",
+              fillOpacity: 0.9,
+              weight: 1,
+            }}
+          >
+            <Tooltip>
+              <span className="text-[10px] font-mono">
+                {g.id} @ {g.airport}{" "}
+                {groundedActive ? "— GROUNDED, cannot depart" : "— scheduled"}
+              </span>
+            </Tooltip>
+          </CircleMarker>
+        ))}
 
       {/* Flight markers -- mode-switched */}
       {mode === "sim"
