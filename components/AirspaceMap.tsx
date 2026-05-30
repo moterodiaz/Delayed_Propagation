@@ -6,9 +6,11 @@ import {
   MapContainer,
   TileLayer,
   CircleMarker,
+  Marker,
   Tooltip,
   Polyline,
 } from "react-leaflet";
+import L from "leaflet";
 import FlightMarker from "@/components/FlightMarker";
 import LiveFlightMarker from "@/components/LiveFlightMarker";
 import TFRZone from "@/components/TFRZone";
@@ -19,6 +21,17 @@ import type {
   Airport,
 } from "@/lib/types";
 import type { GroundedFlight } from "@/lib/data/groundedFlights";
+
+// Parked-plane glyph for stationed flights; red when grounded by the TFR, amber otherwise.
+function groundedIcon(grounded: boolean) {
+  const c = grounded ? "#ef4444" : "#fbbf24";
+  return L.divIcon({
+    html: `<div style="filter:drop-shadow(0 0 4px ${c}aa)"><svg width="15" height="15" viewBox="0 0 24 24" fill="${c}"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></div>`,
+    className: "",
+    iconSize: [15, 15],
+    iconAnchor: [7, 7],
+  });
+}
 
 export interface AirspaceMapProps {
   flights: Flight[];
@@ -117,24 +130,14 @@ export default function AirspaceMap({
       {/* Stationed flights waiting to depart -- sim mode. Turn red + "GROUNDED" when TFR active. */}
       {mode === "sim" &&
         grounded.map((g) => (
-          <CircleMarker
-            key={`gnd-${g.id}`}
-            center={[g.lat, g.lng]}
-            radius={groundedActive ? 4 : 3}
-            pathOptions={{
-              color: groundedActive ? "#ef4444" : "#fbbf24",
-              fillColor: groundedActive ? "#ef4444" : "#fbbf24",
-              fillOpacity: 0.9,
-              weight: 1,
-            }}
-          >
+          <Marker key={`gnd-${g.id}`} position={[g.lat, g.lng]} icon={groundedIcon(groundedActive)}>
             <Tooltip>
               <span className="text-[10px] font-mono">
                 {g.id} @ {g.airport}{" "}
-                {groundedActive ? "— GROUNDED, cannot depart" : "— scheduled"}
+                {groundedActive ? "— GROUNDED, cannot depart" : "— scheduled to depart"}
               </span>
             </Tooltip>
-          </CircleMarker>
+          </Marker>
         ))}
 
       {/* Flight markers -- mode-switched */}

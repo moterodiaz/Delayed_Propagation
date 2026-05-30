@@ -23,12 +23,12 @@ export const NEWS_FEED: NewsFeedItem[] = [
     id: "ntm_faa_001",
     timestamp: "2026-05-22T17:30:00-04:00",
     type: "NOTAM",
-    source: "FAA SWIM / KZJX (Jacksonville Center)",
-    url: "https://tfr.faa.gov/tfr2/list.html",
+    source: "FAA — official SpaceX Starship airspace closures",
+    url: "https://www.faa.gov/space/stakeholder_engagement/spacex_starship",
     headline:
       "NOTAM A0183/26: TEMPORARY FLIGHT RESTRICTIONS (TFR) ACTIVATED FOR SPACEX STARSHIP FLT-12 LAUNCH",
     synthesis:
-      "OPERATOR IMPACT: Surface to space (FL000-FL999) closure over the Gulf of Mexico and Kingston FIR boundaries. Immediate action required for 18 airborne assets: dispatcher intervention must choose between filing an emergency easterly reroute or entering an airborne holding pattern outside the polygon.",
+      "OPERATOR IMPACT: Surface to space (FL000-FL999) closure over the Gulf of Mexico and Kingston FIR boundaries. Immediate action required for 18 airborne assets: dispatcher intervention must choose between filing an emergency easterly reroute or entering an airborne holding pattern outside the polygon. REAL PRECEDENT: for Starship Flight 9 the FAA established an Aircraft Hazard Area + NOTAM closing airspace over the Bahamas and Turks & Caicos — the same corridor JBU1575 turned back from. Tap source for the FAA's official Starship closure docs.",
     metrics: {
       estimated_planes_affected: 18,
       base_fuel_multiplier: 1.45,
@@ -55,8 +55,8 @@ export const NEWS_FEED: NewsFeedItem[] = [
     id: "ntm_faa_002",
     timestamp: "2026-05-22T19:15:00-04:00",
     type: "NOTAM",
-    source: "FAA / JCAA (Jamaica Civil Aviation Authority)",
-    url: "https://jcaa.gov.jm/aeronautical-information",
+    source: "FAA live NOTAM search (notams.aim.faa.gov)",
+    url: "https://notams.aim.faa.gov/notamSearch/",
     headline:
       "NOTAM B0975/26: REENTRY RISK CORRIDOR DECLARED ACTIVE IN LOWER CORRIDORS",
     synthesis:

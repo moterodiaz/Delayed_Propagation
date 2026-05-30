@@ -27,10 +27,11 @@ const REAL: { id: string; airport: "KMIA" | "KFLL" }[] = [
 
 const AIRLINES = ["AAL", "DAL", "JBU", "NKS", "SWA", "UAL"];
 
-// deterministic apron jitter (no Math.random — keeps SSR + determinism stable)
+// deterministic apron spread (no Math.random — keeps SSR + determinism stable).
+// Spread wider so the stationed fleet reads as many distinct planes, not one blob.
 function jitter(i: number): [number, number] {
-  const a = (i * 47) % 360;
-  const r = 0.04 + ((i * 13) % 7) * 0.012;
+  const a = (i * 137) % 360; // golden-ish angle for even scatter
+  const r = 0.12 + ((i * 13) % 9) * 0.06; // ~0.12–0.6 deg around the field
   return [r * Math.cos((a * Math.PI) / 180), r * Math.sin((a * Math.PI) / 180)];
 }
 
