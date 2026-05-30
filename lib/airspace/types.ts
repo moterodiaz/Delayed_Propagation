@@ -17,12 +17,20 @@ export interface FlightState {
   lastSeen?: number | null;
 }
 
+export interface CostLineItem {
+  label: string;
+  usd: number;
+  source: string; // published citation for the rate behind this line
+}
+
 export interface CostBreakdown {
   totalUsd: number;
+  lineItems: CostLineItem[]; // itemized, citable — the "show the data" surface
+  detail: string;
+  // legacy roll-ups (kept for any consumer): airline operating delay, passenger, other
   delayUsd: number;
   fuelUsd: number;
   crewUsd: number;
-  detail: string;
 }
 
 export type ActionKind = "hold" | "divert" | "preempt";
@@ -67,6 +75,13 @@ export interface MetarMarker {
   raw: string;
 }
 
+export interface CostRateDoc {
+  key: string;
+  rate: number;
+  unit: string;
+  source: string;
+}
+
 export interface StateModel {
   events: EventCard[];
   flights: FlightState[];
@@ -75,4 +90,5 @@ export interface StateModel {
   weather: MetarMarker[];
   news: NewsItem[];
   network: NetworkView;
+  costModel: CostRateDoc[]; // published rates + sources — the "show the data" surface
 }

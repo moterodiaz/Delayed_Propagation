@@ -1,5 +1,5 @@
 // lib/airspace/state.ts
-// build_state() orchestrator → StateModel. Deterministic (R9). Ported from backend/state.py.
+// build_state() orchestrator → StateModel. Deterministic (R9).
 import type { StateModel, EventCard } from "./types";
 import {
   loadFlights,
@@ -9,13 +9,9 @@ import {
   loadNews,
 } from "./loader";
 import { detectAffected } from "./detection";
-import { eventCost, trackLengthNm, greatCircleNm } from "./cost";
+import { eventCost, trackLengthNm, COST_RATES } from "./cost";
 import { buildOptions } from "./options";
 import { buildNetworkView } from "./network";
-
-// Kingston (MKJP) — the intended arrival before the U-turn
-const DEST_LAT = 17.936;
-const DEST_LNG = -76.787;
 
 export function buildState(): StateModel {
   const flights = loadFlights();
@@ -23,21 +19,12 @@ export function buildState(): StateModel {
   detectAffected(flights, tfr.polygon, tfr.startSec, tfr.endSec);
 
   const affected = flights.filter((f) => f.affected);
-  const cost = eventCost(flights, DEST_LAT, DEST_LNG);
+  const cost = eventCost(flights);
   const windowHours = (tfr.endSec - tfr.startSec) / 3600;
 
+  // hero's real wasted track distance (out + back ≈ 373 nm) feeds the divert option
   const hero = flights.find((f) => f.isHero);
-  let extraNm = 0;
-  if (hero && hero.track.length > 0) {
-    const flown = trackLengthNm(hero);
-    const direct = greatCircleNm(
-      hero.track[0].lat,
-      hero.track[0].lng,
-      DEST_LAT,
-      DEST_LNG,
-    );
-    extraNm = Math.max(0, flown - direct);
-  }
+  const wastedNm = hero && hero.track.length > 0 ? trackLengthNm(hero) : 0;
 
   const event: EventCard = {
     id: tfr.id,
@@ -46,7 +33,7 @@ export function buildState(): StateModel {
     polygon: tfr.polygon,
     affectedFlightIds: affected.map((f) => f.id),
     cost,
-    options: buildOptions(windowHours, extraNm, affected.length),
+    options: buildOptions(windowHours, wastedNm, affected.length),
     bookmarked: true,
   };
 
@@ -57,5 +44,6 @@ export function buildState(): StateModel {
     weather: loadWeather(),
     news: loadNews(),
     network: buildNetworkView(cost.totalUsd),
+    costModel: COST_RATES,
   };
 }

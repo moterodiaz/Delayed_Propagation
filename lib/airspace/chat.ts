@@ -33,10 +33,11 @@ export function buildFacts(state: StateModel): string {
     lines.push(
       `- ${e.name}: ${e.affectedFlightIds.length} affected flights, total cost ${usd(
         e.cost.totalUsd,
-      )} (fuel ${usd(e.cost.fuelUsd)}, delay ${usd(e.cost.delayUsd)}, crew ${usd(
-        e.cost.crewUsd,
-      )}).`,
+      )}.`,
     );
+    for (const li of e.cost.lineItems) {
+      lines.push(`    ${li.label}: ${usd(li.usd)} [${li.source}]`);
+    }
     lines.push(`  Affected: ${e.affectedFlightIds.join(", ")}.`);
     for (const o of e.options) {
       const mark = o.cheapest ? " (CHEAPEST)" : "";
