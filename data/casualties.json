@@ -1,0 +1,127 @@
+{
+ "event": "SpaceX Flight 12 / Kingston FIR closure 2026-05-22",
+ "window_utc": "21:30-23:30",
+ "total_flights_in_window": 5093,
+ "casualties": [
+  {
+   "flight": "AAL367",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "ab2496",
+   "firstSeen": 1779489225,
+   "lastSeen": 1779491007
+  },
+  {
+   "flight": "DAL1790",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "a44262",
+   "firstSeen": 1779485469,
+   "lastSeen": 1779487431
+  },
+  {
+   "flight": "AAL2231",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "ac76a7",
+   "firstSeen": 1779485526,
+   "lastSeen": 1779490992
+  },
+  {
+   "flight": "AAL1128",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "a32886",
+   "firstSeen": 1779485837,
+   "lastSeen": 1779487828
+  },
+  {
+   "flight": "AAL920",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "a3b8e1",
+   "firstSeen": 1779488476,
+   "lastSeen": 1779490449
+  },
+  {
+   "flight": "JBU1575",
+   "dep": null,
+   "arr": "KFLL",
+   "icao24": "a854d0",
+   "firstSeen": 1779487039,
+   "lastSeen": 1779489352
+  },
+  {
+   "flight": "DAL1328",
+   "dep": "KATL",
+   "arr": "KMIA",
+   "icao24": "a39d95",
+   "firstSeen": 1779486691,
+   "lastSeen": 1779492071
+  },
+  {
+   "flight": "JBU238",
+   "dep": null,
+   "arr": "TJSJ",
+   "icao24": "a79e31",
+   "firstSeen": 1779490803,
+   "lastSeen": 1779491479
+  },
+  {
+   "flight": "DAL1295",
+   "dep": "KATL",
+   "arr": "KFLL",
+   "icao24": "a3cc82",
+   "firstSeen": 1779485700,
+   "lastSeen": 1779491437
+  },
+  {
+   "flight": "AAL914",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "ad0851",
+   "firstSeen": 1779487711,
+   "lastSeen": 1779489393
+  },
+  {
+   "flight": "AAL1102",
+   "dep": "MMUN",
+   "arr": "KMIA",
+   "icao24": "a0c42c",
+   "firstSeen": 1779485551,
+   "lastSeen": 1779489949
+  },
+  {
+   "flight": "JBU575",
+   "dep": "KRDU",
+   "arr": "KFLL",
+   "icao24": "a84d62",
+   "firstSeen": 1779485971,
+   "lastSeen": 1779491722
+  },
+  {
+   "flight": "AAL2987",
+   "dep": "KTPA",
+   "arr": "KMIA",
+   "icao24": "a95dd3",
+   "firstSeen": 1779487410,
+   "lastSeen": 1779489739
+  },
+  {
+   "flight": "AAL1812",
+   "dep": null,
+   "arr": "KMIA",
+   "icao24": "ab2c04",
+   "firstSeen": 1779486180,
+   "lastSeen": 1779491150
+  },
+  {
+   "flight": "JBU2694",
+   "dep": null,
+   "arr": "KFLL",
+   "icao24": "a81abe",
+   "firstSeen": 1779489217,
+   "lastSeen": 1779491159
+  }
+ ]
+}
