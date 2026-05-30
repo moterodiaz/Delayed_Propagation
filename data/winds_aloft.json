@@ -1,0 +1,171 @@
+{
+  "source": "Open-Meteo (GFS 0.25deg, pressure-level winds aloft). HRRR requested but Kingston FIR/Bahamas region is outside HRRR CONUS domain; GFS used as global equivalent.",
+  "description": "Representative winds-aloft profile for debris drift modeling. u_ms=eastward, v_ms=northward (m/s, direction wind blows TOWARD). altitude_m=geopotential height.",
+  "location": {
+    "lat": 23.5,
+    "lon": -77.5,
+    "note": "Center of Starship F12 TFR (Kingston FIR / Bahamas-Florida)"
+  },
+  "valid_time": "2026-05-30T00:00",
+  "units": {
+    "wind_speed": "m/s",
+    "wind_direction": "deg_from",
+    "altitude": "m",
+    "u_ms": "m/s eastward",
+    "v_ms": "m/s northward"
+  },
+  "levels": [
+    {
+      "pressure_hpa": 1000,
+      "altitude_m": 129,
+      "wind_speed_ms": 3.31,
+      "wind_dir_deg": 61,
+      "u_ms": -2.89,
+      "v_ms": -1.6
+    },
+    {
+      "pressure_hpa": 975,
+      "altitude_m": 354,
+      "wind_speed_ms": 3.11,
+      "wind_dir_deg": 64,
+      "u_ms": -2.8,
+      "v_ms": -1.36
+    },
+    {
+      "pressure_hpa": 950,
+      "altitude_m": 582,
+      "wind_speed_ms": 2.31,
+      "wind_dir_deg": 62,
+      "u_ms": -2.04,
+      "v_ms": -1.08
+    },
+    {
+      "pressure_hpa": 925,
+      "altitude_m": 814,
+      "wind_speed_ms": 1.66,
+      "wind_dir_deg": 48,
+      "u_ms": -1.23,
+      "v_ms": -1.11
+    },
+    {
+      "pressure_hpa": 900,
+      "altitude_m": 1052,
+      "wind_speed_ms": 1.15,
+      "wind_dir_deg": 45,
+      "u_ms": -0.81,
+      "v_ms": -0.81
+    },
+    {
+      "pressure_hpa": 850,
+      "altitude_m": 1545,
+      "wind_speed_ms": 1.27,
+      "wind_dir_deg": 180,
+      "u_ms": 0,
+      "v_ms": 1.27
+    },
+    {
+      "pressure_hpa": 800,
+      "altitude_m": 2063,
+      "wind_speed_ms": 3.17,
+      "wind_dir_deg": 203,
+      "u_ms": 1.24,
+      "v_ms": 2.92
+    },
+    {
+      "pressure_hpa": 700,
+      "altitude_m": 3184,
+      "wind_speed_ms": 2.85,
+      "wind_dir_deg": 245,
+      "u_ms": 2.58,
+      "v_ms": 1.2
+    },
+    {
+      "pressure_hpa": 600,
+      "altitude_m": 4445,
+      "wind_speed_ms": 4.05,
+      "wind_dir_deg": 308,
+      "u_ms": 3.19,
+      "v_ms": -2.49
+    },
+    {
+      "pressure_hpa": 500,
+      "altitude_m": 5899,
+      "wind_speed_ms": 3.8,
+      "wind_dir_deg": 285,
+      "u_ms": 3.67,
+      "v_ms": -0.98
+    },
+    {
+      "pressure_hpa": 400,
+      "altitude_m": 7622.22,
+      "wind_speed_ms": 6.01,
+      "wind_dir_deg": 273,
+      "u_ms": 6,
+      "v_ms": -0.31
+    },
+    {
+      "pressure_hpa": 300,
+      "altitude_m": 9732.26,
+      "wind_speed_ms": 11.67,
+      "wind_dir_deg": 272,
+      "u_ms": 11.66,
+      "v_ms": -0.41
+    },
+    {
+      "pressure_hpa": 250,
+      "altitude_m": 11000,
+      "wind_speed_ms": 13.81,
+      "wind_dir_deg": 290,
+      "u_ms": 12.98,
+      "v_ms": -4.72
+    },
+    {
+      "pressure_hpa": 200,
+      "altitude_m": 12481.4,
+      "wind_speed_ms": 16.58,
+      "wind_dir_deg": 285,
+      "u_ms": 16.02,
+      "v_ms": -4.29
+    },
+    {
+      "pressure_hpa": 150,
+      "altitude_m": 14271.64,
+      "wind_speed_ms": 21.75,
+      "wind_dir_deg": 285,
+      "u_ms": 21.01,
+      "v_ms": -5.63
+    },
+    {
+      "pressure_hpa": 100,
+      "altitude_m": 16629.17,
+      "wind_speed_ms": 12.02,
+      "wind_dir_deg": 273,
+      "u_ms": 12,
+      "v_ms": -0.63
+    },
+    {
+      "pressure_hpa": 70,
+      "altitude_m": 18710.38,
+      "wind_speed_ms": 5.9,
+      "wind_dir_deg": 313,
+      "u_ms": 4.31,
+      "v_ms": -4.02
+    },
+    {
+      "pressure_hpa": 50,
+      "altitude_m": 20731.04,
+      "wind_speed_ms": 1.2,
+      "wind_dir_deg": 34,
+      "u_ms": -0.67,
+      "v_ms": -0.99
+    },
+    {
+      "pressure_hpa": 30,
+      "altitude_m": 23962.62,
+      "wind_speed_ms": 6.7,
+      "wind_dir_deg": 96,
+      "u_ms": -6.66,
+      "v_ms": 0.7
+    }
+  ]
+}
