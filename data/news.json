@@ -1,0 +1,5 @@
+[
+  {"id":"gom-mil","headline":"Gulf of Mexico military exercise NOTAM issued","summary":"Restricted airspace W-228 active 14:00-22:00Z this week; affects FL-bound traffic.","source":"FAA NOTAM","can_bookmark":true},
+  {"id":"fl-storm","headline":"Severe convective line forecast over South Florida","summary":"PROB30 TSRA KMIA/KFLL Thu afternoon; possible ground stops.","source":"NWS AWC","can_bookmark":true},
+  {"id":"port-strike","headline":"Port of Kingston labor action enters day 3","summary":"Cargo backlog; minor pax demand shifts on MKJP routes.","source":"GDELT","can_bookmark":true}
+]

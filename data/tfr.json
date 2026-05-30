@@ -1,0 +1,14 @@
+{
+  "id": "spacex-starship-f12",
+  "name": "SpaceX Starship Flight 12 — Kingston FIR closure",
+  "summary": "FAA TFR closed part of the Kingston FIR for Starship Flight 12 reentry.",
+  "polygon": [
+    [26.5, -81.5],
+    [26.5, -74.0],
+    [21.0, -74.0],
+    [21.0, -81.5],
+    [26.5, -81.5]
+  ],
+  "active": {"start": "2026-05-22T21:30:00Z", "end": "2026-05-22T23:43:00Z"},
+  "source": "FAA TFR / NASA DIP (replay)"
+}

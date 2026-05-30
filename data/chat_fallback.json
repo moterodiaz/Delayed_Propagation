@@ -1,0 +1,7 @@
+{
+  "what's hitting us right now?":"The SpaceX Starship Flight 12 TFR is your active disruption. It closed part of the Kingston FIR (21:30-23:43Z) and flagged your affected flights led by JBU1575, which U-turned over the Bahamas back to Fort Lauderdale. Weather at KFLL/KMIA/MKJP is clear VFR -- this is purely an airspace closure.",
+  "break down the spacex impact":"The SpaceX TFR hit your fleet via wasted distance and delay. JBU1575 flew a long U-turn instead of the direct KFLL to Kingston route. Cost splits into extra fuel, delay minutes, and crew. See the event card for exact figures.",
+  "what should i do about jbu1575?":"Three options, cheapest flagged: pre-empt (delay departure on the ground to skip the window) is typically cheapest, then hold, then divert. Recommendation: pre-empt -- ground delay beats burning fuel airborne or diverting.",
+  "draft a note to the crew":"OPS NOTICE -- KFLL/MKJP: Active TFR (SpaceX Starship F12) closes Kingston FIR 21:30-23:43Z. JBU1575 returned to KFLL. Crews on Kingston routes: expect ground hold / reroute. Watch for revised release times. Weather is clear; airspace restriction only.",
+  "what's the network picture?":"Acting alone you absorb the full modeled cost. If carriers coordinated slot usage, total network cost drops to ~75% of that -- the gap is value left on the table when everyone optimizes independently. You only move your own flights, but the board shows the whole picture."
+}
