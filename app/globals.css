@@ -13,3 +13,28 @@
 .tfr-pulse {
   animation: tfr-pulse 2s ease-in-out infinite;
 }
+
+/* Timeline scrubber thumb -- track is drawn separately behind it */
+.timeline-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2px solid #06b6d4;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.8);
+  cursor: pointer;
+}
+.timeline-scrub::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2px solid #06b6d4;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.8);
+  cursor: pointer;
+}
+.timeline-scrub::-moz-range-track {
+  background: transparent;
+}

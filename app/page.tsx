@@ -3,7 +3,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
-import SimulationControls from "@/components/SimulationControls";
+import SimulationControls, {
+  type TimelineMarker,
+} from "@/components/SimulationControls";
 import EventFeed from "@/components/EventFeed";
 import NewsFeed from "@/components/NewsFeed";
 import { getActiveTFRs, generateRandomTFR } from "@/lib/simulation";
@@ -145,6 +147,25 @@ export default function Page() {
 
   const activeTFRs = mode === "sim" ? getActiveTFRs(MOCK_TFRS, simTime) : [];
 
+  // Jump straight to a point on the timeline; pause so it doesn't tick away.
+  const handleSeek = useCallback((t: number) => {
+    setIsPlaying(false);
+    setSimTime(Math.max(0, Math.min(t, SIM_DURATION)));
+  }, []);
+
+  // Clickable timeline markers: news alerts + the JetBlue diversion beat.
+  const timelineMarkers: TimelineMarker[] = [
+    ...NEWS_FEED.map((it) => {
+      const time = it.timestamp.slice(11, 19).split(":").map(Number);
+      return {
+        t: (time[0] - 17) * 3600 + time[1] * 60 + time[2],
+        label: it.headline,
+        danger: it.type === "NOTAM",
+      };
+    }),
+    { t: 4800, label: "JetBlue 1575 turn-back to KMIA", danger: true },
+  ];
+
   return (
     <div className="w-screen h-screen flex flex-col bg-gray-950 overflow-hidden">
       {/* Header */}
@@ -241,6 +262,8 @@ export default function Page() {
             speed={speed}
             onTogglePlay={() => setIsPlaying((p) => !p)}
             onSetSpeed={setSpeed}
+            onSeek={handleSeek}
+            markers={timelineMarkers}
           />
         </div>
       )}
