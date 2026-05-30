@@ -5,6 +5,7 @@ export interface LatLng {
 
 export interface Waypoint extends LatLng {
   t: number; // sim seconds from epoch (17:00 EDT = 0)
+  synthetic?: boolean; // true = drawn outbound leg; false/undefined = real ADS-B
 }
 
 export type FlightStatus =

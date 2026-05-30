@@ -7,9 +7,14 @@ import SimulationControls from "@/components/SimulationControls";
 import EventFeed from "@/components/EventFeed";
 import { getActiveTFRs, generateRandomTFR } from "@/lib/simulation";
 import { fetchLiveFlights } from "@/lib/opensky";
-import { MOCK_FLIGHTS } from "@/lib/data/flights";
-import { MOCK_TFRS } from "@/lib/data/tfr";
+import { HERO_FLIGHT } from "@/lib/data/heroFlight";
+import { KINGSTON_TFRS } from "@/lib/data/kingstonTFR";
 import { AIRPORTS } from "@/lib/data/airports";
+
+// Real hero flight (JBU1575) is the only flight with a real ADS-B track in the
+// dataset; the 14 other casualties have no positions to animate. So the sim map
+// shows the real hero against the real Kingston FIR closure.
+const SIM_FLIGHTS = [HERO_FLIGHT];
 import type { TFRZone, SimEvent, LiveFlight } from "@/lib/types";
 
 const AirspaceMap = dynamic(() => import("@/components/AirspaceMap"), {
@@ -44,7 +49,7 @@ export default function Page() {
     {
       id: "init-1",
       simTime: 0,
-      message: "Monitoring 4 flights in Florida-Caribbean FIR.",
+      message: "Monitoring JetBlue 1575 (KFLL->MKJP) -- Kingston FIR.",
       type: "info",
     },
   ]);
@@ -76,7 +81,7 @@ export default function Page() {
   // Scripted sim events
   useEffect(() => {
     if (mode !== "sim") return;
-    getActiveTFRs([...MOCK_TFRS, ...extraTFRs], simTime).forEach((tfr) => {
+    getActiveTFRs([...KINGSTON_TFRS, ...extraTFRs], simTime).forEach((tfr) => {
       if (!firedEvents.current.has(tfr.id)) {
         firedEvents.current.add(tfr.id);
         addEvent({
@@ -86,12 +91,12 @@ export default function Page() {
         });
       }
     });
-    if (simTime >= 4800 && !firedEvents.current.has("b61575-diverted")) {
+    if (simTime >= 2239 && !firedEvents.current.has("b61575-diverted")) {
       firedEvents.current.add("b61575-diverted");
       addEvent({
         simTime,
         message:
-          "JetBlue 1575: entered TFR boundary -- executing emergency turn-back to KMIA.",
+          "JetBlue 1575: no clearance through Kingston FIR closure -- U-turn over the Bahamas, returning to KFLL.",
         type: "danger",
       });
     }
@@ -141,7 +146,7 @@ export default function Page() {
     });
   }, [simTime, addEvent]);
 
-  const activeTFRs = mode === "sim" ? getActiveTFRs(MOCK_TFRS, simTime) : [];
+  const activeTFRs = mode === "sim" ? getActiveTFRs(KINGSTON_TFRS, simTime) : [];
 
   return (
     <div className="w-screen h-screen flex flex-col bg-gray-950 overflow-hidden">
@@ -210,7 +215,7 @@ export default function Page() {
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 relative">
           <AirspaceMap
-            flights={MOCK_FLIGHTS}
+            flights={SIM_FLIGHTS}
             simTime={simTime}
             liveFlights={liveFlights}
             activeTFRs={activeTFRs}
