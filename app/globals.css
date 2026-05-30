@@ -1,0 +1,15 @@
+@import "leaflet/dist/leaflet.css";
+@import "tailwindcss";
+
+@keyframes tfr-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.tfr-pulse {
+  animation: tfr-pulse 2s ease-in-out infinite;
+}
