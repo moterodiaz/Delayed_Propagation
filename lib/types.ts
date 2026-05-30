@@ -58,3 +58,19 @@ export interface SimEvent {
   message: string;
   type: "info" | "warning" | "danger";
 }
+
+export interface NewsFeedMetrics {
+  estimated_planes_affected: number;
+  base_fuel_multiplier: number;
+  projected_delay_mins: number;
+}
+
+export interface NewsFeedItem {
+  id: string;
+  timestamp: string; // ISO 8601 with offset
+  type: "NEWS_ALERT" | "NOTAM";
+  source: string;
+  headline: string;
+  synthesis: string;
+  metrics: NewsFeedMetrics;
+}

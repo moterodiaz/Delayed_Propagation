@@ -5,10 +5,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import SimulationControls from "@/components/SimulationControls";
 import EventFeed from "@/components/EventFeed";
+import NewsFeed from "@/components/NewsFeed";
 import { getActiveTFRs, generateRandomTFR } from "@/lib/simulation";
 import { fetchLiveFlights } from "@/lib/opensky";
 import { MOCK_FLIGHTS } from "@/lib/data/flights";
 import { MOCK_TFRS } from "@/lib/data/tfr";
+import { NEWS_FEED } from "@/lib/data/newsFeed";
 import { AIRPORTS } from "@/lib/data/airports";
 import type { TFRZone, SimEvent, LiveFlight } from "@/lib/types";
 
@@ -221,6 +223,12 @@ export default function Page() {
         </div>
         <div className="w-72 shrink-0 p-3 overflow-hidden">
           <EventFeed events={events} onInjectRandomEvent={handleInjectRandom} />
+        </div>
+        <div className="w-80 shrink-0 py-3 pr-3 overflow-hidden">
+          <NewsFeed
+            items={NEWS_FEED}
+            simTime={mode === "sim" ? simTime : undefined}
+          />
         </div>
       </div>
 
