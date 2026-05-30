@@ -1,6 +1,7 @@
 // components/AirspaceMap.tsx
 "use client";
 
+import { Fragment } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -44,22 +45,43 @@ export default function AirspaceMap({
         attribution='&copy; <a href="https://carto.com/">CartoDB</a>'
       />
 
-      {/* Planned route trails -- sim mode only */}
+      {/* Route trails -- sim mode only.
+          Synthetic (drawn outbound) leg renders dashed/dim; real ADS-B leg
+          renders solid/bright. The seam is the U-turn point. */}
       {mode === "sim" &&
-        flights.map((f) => (
-          <Polyline
-            key={`route-${f.id}`}
-            positions={f.waypoints.map(
-              (w) => [w.lat, w.lng] as [number, number],
-            )}
-            pathOptions={{
-              color: "#374151",
-              weight: 1,
-              dashArray: "4 4",
-              opacity: 0.6,
-            }}
-          />
-        ))}
+        flights.map((f) => {
+          const synth = f.waypoints.filter((w) => w.synthetic);
+          const real = f.waypoints.filter((w) => !w.synthetic);
+          // Connect the synthetic leg to the first real point so there's no gap.
+          const synthPositions = [
+            ...synth.map((w) => [w.lat, w.lng] as [number, number]),
+            ...(real[0] ? [[real[0].lat, real[0].lng] as [number, number]] : []),
+          ];
+          const realPositions = real.map(
+            (w) => [w.lat, w.lng] as [number, number],
+          );
+          return (
+            <Fragment key={`route-${f.id}`}>
+              {synthPositions.length > 1 && (
+                <Polyline
+                  positions={synthPositions}
+                  pathOptions={{
+                    color: "#6b7280",
+                    weight: 1,
+                    dashArray: "4 4",
+                    opacity: 0.5,
+                  }}
+                />
+              )}
+              {realPositions.length > 1 && (
+                <Polyline
+                  positions={realPositions}
+                  pathOptions={{ color: "#22d3ee", weight: 2, opacity: 0.9 }}
+                />
+              )}
+            </Fragment>
+          );
+        })}
 
       {/* TFR zones (both modes) */}
       {[...activeTFRs, ...extraTFRs].map((zone) => (
