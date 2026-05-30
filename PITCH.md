@@ -79,6 +79,17 @@ Clear-weather paradox + a sourced dollar figure + the coordination gap. Three th
 
 API contract: `GET /api/state` returns the full deterministic snapshot (flights, cost, options, network, sources); `POST /api/chat` answers grounded in those numbers.
 
+### APIs we actually called
+
+| API | Use | Where |
+|---|---|---|
+| **OpenSky Network API** | Real ADS-B aircraft tracking — live positions (`/states/all`) for Live mode + the JBU1575 historical track (`/tracks/all`, OAuth2, cached) for the U-turn | `app/api/flights/route.ts`, `lib/opensky.ts`, `data/jbu1575_track.json` |
+| **Anthropic API** (Claude `claude-sonnet-4-6`) | The grounded ops chatbot — answers from computed numbers, cached fallback | `lib/airspace/chat.ts` |
+| **Aviation Weather Center API** (`aviationweather.gov`) | METAR observations → the clear-VFR markers (the paradox) | `data/metar.json` (pulled once, cached) |
+| **CARTO basemap tiles + OpenStreetMap** | Dark map tiles | `components/AirspaceMap.tsx`, `components/demo/DemoMap.tsx` |
+
+**Data sources / citations (not live APIs):** Airlines for America (A4A) 2024 delay costs · FAA/DOT value of passenger time · EUROCONTROL Standard Inputs (diversion) · FAA SpaceX Starship airspace-closure docs. GDELT / FAA SWIM appear in the narrative as the *kind* of feed a production system would ingest — they are not called in this build.
+
 ## How we calculated the pricing
 
 Per-flight disruption cost = sum of sourced line items (no invented numbers; fuel is inside the block rate, never double-counted):

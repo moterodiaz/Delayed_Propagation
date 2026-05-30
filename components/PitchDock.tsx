@@ -80,7 +80,17 @@ export default function PitchDock({ state }: { state: StateModel | null }) {
               </p>
             </Section>
 
-            <p className="text-[11px] text-gray-500 mt-4">Sources: A4A 2024 · FAA/DOT · EUROCONTROL · OpenSky. Full write-up in PITCH.md.</p>
+            <Section title="APIs we actually used">
+              <ul className="list-disc pl-4 space-y-1 text-sm">
+                <li><b>OpenSky Network API</b> — real ADS-B: live aircraft + the JBU1575 track</li>
+                <li><b>Anthropic API</b> (Claude claude-sonnet-4-6) — the grounded chatbot</li>
+                <li><b>Aviation Weather Center API</b> (aviationweather.gov) — METAR / clear-VFR markers</li>
+                <li><b>CARTO + OpenStreetMap</b> — dark map tiles</li>
+              </ul>
+              <p className="text-xs text-gray-500 mt-2">Data citations (not live APIs): A4A 2024 · FAA/DOT · EUROCONTROL · FAA Starship closure docs.</p>
+            </Section>
+
+            <p className="text-[11px] text-gray-500 mt-4">Full write-up in PITCH.md.</p>
           </div>
         </div>
       )}
